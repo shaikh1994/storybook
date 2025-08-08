@@ -15,6 +15,7 @@ import "./App.css";
 function App() {
   const [currentStory, setCurrentStory] = useState(null);
   const [savedStories, setSavedStories] = useState([]);
+  const [shouldPreserveForms, setShouldPreserveForms] = useState(false);
 
   const handleStoryGenerated = (story) => {
     setCurrentStory(story);
@@ -23,6 +24,16 @@ function App() {
 
   const handleSelectStory = (story) => {
     setCurrentStory(story);
+  };
+
+  const handleCreateAnother = () => {
+    // Signal that we want to preserve form data when navigating to create page
+    setShouldPreserveForms(true);
+  };
+
+  // Reset the preserve flag when forms are loaded
+  const handleFormsLoaded = () => {
+    setShouldPreserveForms(false);
   };
 
   return (
@@ -40,6 +51,8 @@ function App() {
               element={
                 <StoryCreationForm 
                   onStoryGenerated={handleStoryGenerated}
+                  preserveForms={shouldPreserveForms}
+                  onFormsLoaded={handleFormsLoaded}
                 />
               } 
             />
@@ -47,7 +60,10 @@ function App() {
               path="/reader" 
               element={
                 currentStory ? (
-                  <StoryReader story={currentStory} />
+                  <StoryReader 
+                    story={currentStory} 
+                    onCreateAnother={handleCreateAnother}
+                  />
                 ) : (
                   <Navigate to="/" replace />
                 )

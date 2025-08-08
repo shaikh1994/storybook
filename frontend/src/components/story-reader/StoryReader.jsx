@@ -7,16 +7,51 @@ import {
   FaChevronRight, 
   FaPlay, 
   FaPause, 
-  FaDownload 
+  FaDownload,
+  FaMagic,
+  FaShoppingCart
 } from "react-icons/fa";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
+import Toast from "../toast/Toast";
 import "./StoryReader.css";
 
-const StoryReader = ({ story }) => {
+const StoryReader = ({ story, onCreateAnother }) => {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(0);
   const [isReading, setIsReading] = useState(false);
+  const [showEndActions, setShowEndActions] = useState(false);
+  const [showToast, setShowToast] = useState(true);
+
+  // Check if we're on the last page
+  const isLastPage = currentPage === story.pages.length - 1;
+
+  // Determine toast message and type based on API key status
+  const getToastInfo = () => {
+    if (!story.apiKeyStatus) return null;
+
+    switch (story.apiKeyStatus) {
+      case 'invalid_key':
+        return {
+          type: 'warning',
+          message: `Invalid API key provided (${story.providedApiKey?.substring(0, 7)}...). Please check your key format - it should start with "sk-". Currently showing mock story.`
+        };
+      case 'no_key':
+        return {
+          type: 'info', 
+          message: 'No API key provided, so showing a sample mock story. Add your OpenAI API key to generate personalized AI stories.'
+        };
+      case 'api_error':
+        return {
+          type: 'warning',
+          message: 'API connection failed. Currently showing mock story. Please check your API key and try again.'
+        };
+      default:
+        return null;
+    }
+  };
+
+  const toastInfo = getToastInfo();
 
   // Auto-advance pages when reading
   useEffect(() => {
@@ -28,6 +63,7 @@ const StoryReader = ({ story }) => {
             return prev + 1;
           } else {
             setIsReading(false);
+            setShowEndActions(true); // Show action buttons when story ends
             return prev;
           }
         });
@@ -35,6 +71,18 @@ const StoryReader = ({ story }) => {
     }
     return () => clearInterval(interval);
   }, [isReading, story.pages.length]);
+
+  // Show end actions when manually reaching last page
+  useEffect(() => {
+    if (isLastPage) {
+      const timer = setTimeout(() => {
+        setShowEndActions(true);
+      }, 2000); // Show buttons after 2 seconds on last page
+      return () => clearTimeout(timer);
+    } else {
+      setShowEndActions(false);
+    }
+  }, [isLastPage]);
 
   const nextPage = () => {
     if (currentPage < story.pages.length - 1) {
@@ -46,6 +94,20 @@ const StoryReader = ({ story }) => {
     if (currentPage > 0) {
       setCurrentPage(currentPage - 1);
     }
+  };
+
+  const handleCreateAnother = () => {
+    // Call parent function to preserve form data
+    if (onCreateAnother) {
+      onCreateAnother();
+    }
+    navigate('/create');
+  };
+
+  const handleBuyProduct = () => {
+    // TODO: Implement your product/subscription logic here
+    alert('Product page coming soon! This will redirect to your pricing/subscription page.');
+    // Future: navigate('/pricing') or window.open('https://your-product-page.com')
   };
 
   const exportToPDF = async () => {
@@ -171,6 +233,47 @@ const StoryReader = ({ story }) => {
             </div>
           </motion.div>
 
+          {/* End of Story Action Buttons */}
+          {isLastPage && showEndActions && (
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="end-story-actions"
+            >
+              <div className="actions-container">
+                <h3 className="actions-title">What would you like to do next?</h3>
+                <div className="action-buttons">
+                  <motion.button
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleCreateAnother}
+                    className="end-action-button primary"
+                  >
+                    <FaMagic className="button-icon" />
+                    <div className="button-content">
+                      <span className="button-title">Create Another Story</span>
+                      <span className="button-subtitle">Your settings will be saved</span>
+                    </div>
+                  </motion.button>
+
+                  <motion.button
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleBuyProduct}
+                    className="end-action-button secondary"
+                  >
+                    <FaShoppingCart className="button-icon" />
+                    <div className="button-content">
+                      <span className="button-title">Get Full Access</span>
+                      <span className="button-subtitle">Unlimited stories & features</span>
+                    </div>
+                  </motion.button>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
           {/* Page Indicators */}
           <div className="page-indicators">
             {story.pages.map((_, index) => (
@@ -193,6 +296,16 @@ const StoryReader = ({ story }) => {
           }}
         />
       </div>
+
+      {/* Toast Notification */}
+      {showToast && toastInfo && (
+        <Toast
+          message={toastInfo.message}
+          type={toastInfo.type}
+          duration={8000}
+          onClose={() => setShowToast(false)}
+        />
+      )}
     </motion.div>
   );
 };

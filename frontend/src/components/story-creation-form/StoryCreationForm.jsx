@@ -1,5 +1,5 @@
 // src/components/story-creation-form/StoryCreationForm.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { 
@@ -13,12 +13,15 @@ import {
   FaMoon,
   FaCrown,
   FaDragon,
-  FaGem
+  FaGem,
+  FaGlobe,
+  FaBrush
 } from "react-icons/fa";
+import { saveFormData, getInitialFormData } from "../../utils/sessionStorage";
 import "./StoryCreationForm.css";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+const API = `${BACKEND_URL}/storybook`;
 
 // Mock story generation for development
 const generateMockStory = (storyData) => {
@@ -49,18 +52,42 @@ const generateMockStory = (storyData) => {
   };
 };
 
-const StoryCreationForm = ({ onStoryGenerated }) => {
+const StoryCreationForm = ({ onStoryGenerated, preserveForms, onFormsLoaded }) => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    age: 5,
-    theme: 'fairy',
-    characterName: '',
-    characterTraits: '',
-    pageCount: 5,
-    moralLesson: '',
-    openaiApiKey: ''
-  });
+  const [formData, setFormData] = useState(getInitialFormData()); // Load saved data
   const [isGenerating, setIsGenerating] = useState(false);
+
+  // Handle form loading signal
+  useEffect(() => {
+    if (preserveForms && onFormsLoaded) {
+      onFormsLoaded();
+    }
+  }, [preserveForms, onFormsLoaded]);
+
+  // Save form data whenever it changes (debounced)
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      saveFormData(formData);
+    }, 1000); // Save after 1 second of no changes
+
+    return () => clearTimeout(timeoutId);
+  }, [formData]);
+
+  // Clear session storage when page is unloaded (browser closed/refreshed)
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      // Clear the session storage when user closes browser/tab
+      sessionStorage.removeItem('storybook_form_data');
+    };
+
+    // Add event listener for page unload
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
 
   const themes = [
     { id: 'space', name: 'Space Adventure', icon: <FaRocket />, emoji: '🚀' },
@@ -71,43 +98,89 @@ const StoryCreationForm = ({ onStoryGenerated }) => {
     { id: 'unicorn', name: 'Unicorn Dreams', icon: <FaGem />, emoji: '🦄' }
   ];
 
+  // NEW: Language options
+  const languages = [
+    { code: 'English', name: 'English', flag: '🇺🇸' },
+    { code: 'Spanish', name: 'Español', flag: '🇪🇸' },
+    { code: 'French', name: 'Français', flag: '🇫🇷' },
+    { code: 'German', name: 'Deutsch', flag: '🇩🇪' },
+    { code: 'Italian', name: 'Italiano', flag: '🇮🇹' },
+    { code: 'Portuguese', name: 'Português', flag: '🇵🇹' },
+    { code: 'Chinese', name: '中文', flag: '🇨🇳' },
+    { code: 'Japanese', name: '日本語', flag: '🇯🇵' },
+    { code: 'Korean', name: '한국어', flag: '🇰🇷' },
+    { code: 'Dutch', name: 'Nederlands', flag: '🇳🇱' }
+  ];
+
+  // NEW: Illustration style options (from backend)
+  const illustrationStyles = [
+    { id: 'Classic Cartoon Style', name: 'Classic Cartoon', description: 'Exaggerated expressions, rounded features, bright playful colors' },
+    { id: 'Watercolor Style', name: 'Watercolor', description: 'Soft, hand-painted feel, gentle brush strokes' },
+    { id: 'Flat Vector Style', name: 'Flat Vector', description: 'Clean, minimalistic shapes, bold color blocks' },
+    { id: 'Anime/Manga Style (Chibi)', name: 'Anime/Chibi', description: 'Big eyes, tiny bodies, cute fantasy design' },
+    { id: '3D CGI / Pixar-Like Style', name: '3D/Pixar Style', description: 'Realistic lighting, detailed textures, 3D forms' },
+    { id: 'Paper Cutout / Collage Style', name: 'Paper Cutout', description: 'Layered textures, handmade visual vibe' },
+    { id: 'Line Art / Sketch Style', name: 'Line Art/Sketch', description: 'Pencil-like, suitable for coloring-in' },
+    { id: 'Fantasy / Medieval Style', name: 'Fantasy/Medieval', description: 'Mythical creatures, detailed, epic themes' },
+    { id: 'Pixel Art Style', name: 'Pixel Art', description: 'Retro, video-game inspired design' },
+    { id: 'Vintage Storybook Style', name: 'Vintage Storybook', description: 'Faded tones, hand-drawn old-fashioned look' }
+  ];
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!formData.characterName.trim()) {
-      alert('Please enter a character name!');
+    if (!formData.characterDescription.trim()) {
+      alert('Please enter a character description!');
       return;
     }
 
     setIsGenerating(true);
 
     try {
-      // Try API call first, fall back to mock if it fails
+      // Create the proper payload for the backend
+      const backendPayload = {
+        short_description: `${formData.characterDescription} ${formData.moralLesson ? `The story teaches about ${formData.moralLesson}.` : ''}`.trim(),
+        pages: formData.pageCount,
+        age: formData.age.toString(), // Convert to string as backend expects
+        topic: formData.theme,
+        language: formData.language,
+        illustration_style: formData.illustrationStyle,
+        openai_api_key: formData.openaiApiKey || null // NEW: Include API key
+      };
+
+      // Try API call to story-book-backend
       let story;
       try {
-        const response = await fetch(`${API}/generate-story`, {
+        const response = await fetch(`${API}/get_stories`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            age: formData.age,
-            theme: formData.theme,
-            character_name: formData.characterName,
-            character_traits: formData.characterTraits,
-            page_count: formData.pageCount,
-            moral_lesson: formData.moralLesson,
-            openai_api_key: formData.openaiApiKey
-          })
+          body: JSON.stringify(backendPayload)
         });
         
         if (response.ok) {
           const result = await response.json();
-          story = result.story;
+          // Transform backend response to frontend format
+          story = {
+            id: Date.now().toString(),
+            title: result.story_title,
+            coverImage: result.story_book[0]?.illustration_path || "https://images.unsplash.com/photo-1533561304446-88a43deb6229?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzV8MHwxfHNlYXJjaHwxfHxjaGlsZHJlbiUyMGJvb2t8ZW58MHx8fHwxNzU0NTQyOTM4fDA&ixlib=rb-4.1.0&q=85&w=600&h=400",
+            pages: result.story_book.map(page => ({
+              id: page.page,
+              text: page.story_text,
+              image: page.illustration_path || "https://images.unsplash.com/photo-1519791883288-dc8bd696e667?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NjZ8MHwxfHNlYXJjaHwxfHxzdG9yeWJvb2t8ZW58MHx8fHwxNzU0NTQyOTMzfDA&ixlib=rb-4.1.0&q=85&w=400&h=300"
+            })),
+            createdAt: new Date().toISOString()
+          };
         } else {
+          // API call failed, use mock
+          apiKeyStatus = backendPayload.openai_api_key ? 'invalid_key' : 'api_error';
           throw new Error('API not available');
         }
       } catch (error) {
         console.log('Using mock story generation');
         story = generateMockStory(formData);
+        story.apiKeyStatus = apiKeyStatus;
+        story.providedApiKey = backendPayload.openai_api_key;
       }
 
       onStoryGenerated(story);
@@ -130,7 +203,7 @@ const StoryCreationForm = ({ onStoryGenerated }) => {
         <div className="generating-content">
           <div className="loading-spinner"></div>
           <h2>Creating Your Magical Story...</h2>
-          <p>Our AI is crafting a personalized adventure for {formData.characterName}</p>
+          <p>Our AI is crafting a personalized adventure based on your character description</p>
           
           <div className="loading-animation">
             {['🌟', '🎨', '📖', '✨'].map((emoji, index) => (
@@ -238,31 +311,76 @@ const StoryCreationForm = ({ onStoryGenerated }) => {
           >
             <h3 className="section-title">
               <span className="section-emoji">👦</span>
-              Character Details
+              Character Description
             </h3>
-            <div className="character-inputs">
-              <div className="input-group">
-                <label className="input-label">Character Name *</label>
-                <input
-                  type="text"
-                  value={formData.characterName}
-                  onChange={(e) => setFormData({...formData, characterName: e.target.value})}
-                  className="text-input"
-                  placeholder="Enter your child's name or character name"
-                  required
-                />
-              </div>
-              
-              <div className="input-group">
-                <label className="input-label">Character Traits (Optional)</label>
-                <input
-                  type="text"
-                  value={formData.characterTraits}
-                  onChange={(e) => setFormData({...formData, characterTraits: e.target.value})}
-                  className="text-input"
-                  placeholder="brave, kind, curious, funny..."
-                />
-              </div>
+            <div className="input-group">
+              <label className="input-label">Describe your main character *</label>
+              <textarea
+                value={formData.characterDescription}
+                onChange={(e) => setFormData({...formData, characterDescription: e.target.value})}
+                className="text-input character-description"
+                placeholder="e.g., Emma is a brave 7-year-old girl with curly red hair who loves adventure and helping animals..."
+                rows={4}
+                required
+              />
+              <small className="input-help">
+                Include the character's name, age, appearance, personality, and any special traits
+              </small>
+            </div>
+          </motion.div>
+
+          {/* NEW: Language Selection */}
+          <motion.div 
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            className="form-section"
+          >
+            <h3 className="section-title">
+              <FaGlobe />
+              Story Language
+            </h3>
+            <div className="language-grid">
+              {languages.map((lang) => (
+                <motion.button
+                  key={lang.code}
+                  type="button"
+                  onClick={() => setFormData({...formData, language: lang.code})}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className={`language-button ${formData.language === lang.code ? 'active' : ''}`}
+                >
+                  <span className="language-flag">{lang.flag}</span>
+                  <span className="language-name">{lang.name}</span>
+                </motion.button>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* NEW: Illustration Style Selection */}
+          <motion.div 
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="form-section"
+          >
+            <h3 className="section-title">
+              <FaBrush />
+              Illustration Style
+            </h3>
+            <div className="illustration-styles">
+              {illustrationStyles.map((style) => (
+                <motion.div
+                  key={style.id}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className={`style-option ${formData.illustrationStyle === style.id ? 'active' : ''}`}
+                  onClick={() => setFormData({...formData, illustrationStyle: style.id})}
+                >
+                  <div className="style-name">{style.name}</div>
+                  <div className="style-description">{style.description}</div>
+                </motion.div>
+              ))}
             </div>
           </motion.div>
 
@@ -270,7 +388,7 @@ const StoryCreationForm = ({ onStoryGenerated }) => {
           <motion.div 
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.4 }}
+            transition={{ delay: 0.6 }}
             className="form-section"
           >
             <h3 className="section-title">
@@ -305,11 +423,11 @@ const StoryCreationForm = ({ onStoryGenerated }) => {
             </div>
           </motion.div>
 
-          {/* OpenAI API Key (Optional) */}
+          {/* OpenAI API Key (Optional) - Keep for mock fallback */}
           <motion.div 
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.5 }}
+            transition={{ delay: 0.7 }}
             className="form-section"
           >
             <h3 className="section-title">
@@ -325,7 +443,7 @@ const StoryCreationForm = ({ onStoryGenerated }) => {
                 placeholder="sk-... (for AI-generated stories)"
               />
               <small className="input-help">
-                Provide your OpenAI API key for AI-generated stories. Otherwise, we'll create a sample story.
+                Provide your OpenAI API key for AI-generated stories. If not provided, the system will use the server's API key or generate a sample story.
               </small>
             </div>
           </motion.div>
@@ -334,7 +452,7 @@ const StoryCreationForm = ({ onStoryGenerated }) => {
           <motion.button
             initial={{ y: 30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.6, duration: 0.8 }}
+            transition={{ delay: 0.8, duration: 0.8 }}
             whileHover={{ 
               scale: 1.05,
               boxShadow: "0 20px 40px rgba(147, 51, 234, 0.3)"
@@ -342,12 +460,12 @@ const StoryCreationForm = ({ onStoryGenerated }) => {
             whileTap={{ scale: 0.95 }}
             type="submit"
             className="submit-button"
-            disabled={!formData.characterName.trim()}
+            disabled={!formData.characterDescription.trim()}
           >
             <FaMagic className="button-icon" />
             Create My Story
           </motion.button>
-          </form>
+        </form>
       </div>
     </motion.div>
   );

@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Optional
 
 
 class StoryResponse(BaseModel):
@@ -13,6 +14,7 @@ class StoryRequest(BaseModel):
     topic: str
     language: str
     illustration_style: str
+    openai_api_key: Optional[str] = None  # NEW: Optional API key from frontend
     
 class CharacterDescription(BaseModel):
     character_name: str
