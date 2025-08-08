@@ -130,68 +130,83 @@ const StoryCreationForm = ({ onStoryGenerated, preserveForms, onFormsLoaded }) =
     e.preventDefault();
     
     if (!formData.characterDescription.trim()) {
-      alert('Please enter a character description!');
-      return;
+        alert('Please provide a character description for your story.');
+        return;
     }
 
     setIsGenerating(true);
 
+    // DECLARE the apiKeyStatus variable at the top
+    let apiKeyStatus = null;
+
     try {
-      // Create the proper payload for the backend
-      const backendPayload = {
+        // Create the proper payload for the backend
+        const backendPayload = {
         short_description: `${formData.characterDescription} ${formData.moralLesson ? `The story teaches about ${formData.moralLesson}.` : ''}`.trim(),
         pages: formData.pageCount,
-        age: formData.age.toString(), // Convert to string as backend expects
+        age: formData.age.toString(),
         topic: formData.theme,
         language: formData.language,
         illustration_style: formData.illustrationStyle,
-        openai_api_key: formData.openaiApiKey || null // NEW: Include API key
-      };
+        openai_api_key: formData.openaiApiKey || null
+        };
 
-      // Try API call to story-book-backend
-      let story;
-      try {
+        // Determine API key status BEFORE the API call
+        if (!backendPayload.openai_api_key) {
+        apiKeyStatus = 'no_key';
+        } else if (!backendPayload.openai_api_key.startsWith('sk-')) {
+        apiKeyStatus = 'invalid_key';
+        }
+
+        // Try API call to story-book-backend
+        let story;
+        try {
         const response = await fetch(`${API}/get_stories`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(backendPayload)
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(backendPayload)
         });
         
         if (response.ok) {
-          const result = await response.json();
-          // Transform backend response to frontend format
-          story = {
+            const result = await response.json();
+            // Transform backend response to frontend format
+            story = {
             id: Date.now().toString(),
             title: result.story_title,
             coverImage: result.story_book[0]?.illustration_path || "https://images.unsplash.com/photo-1533561304446-88a43deb6229?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzV8MHwxfHNlYXJjaHwxfHxjaGlsZHJlbiUyMGJvb2t8ZW58MHx8fHwxNzU0NTQyOTM4fDA&ixlib=rb-4.1.0&q=85&w=600&h=400",
             pages: result.story_book.map(page => ({
-              id: page.page,
-              text: page.story_text,
-              image: page.illustration_path || "https://images.unsplash.com/photo-1519791883288-dc8bd696e667?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NjZ8MHwxfHNlYXJjaHwxfHxzdG9yeWJvb2t8ZW58MHx8fHwxNzU0NTQyOTMzfDA&ixlib=rb-4.1.0&q=85&w=400&h=300"
+                id: page.page,
+                text: page.story_text,
+                image: page.illustration_path || "https://images.unsplash.com/photo-1519791883288-dc8bd696e667?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NjZ8MHwxfHNlYXJjaHwxfHxzdG9yeWJvb2t8ZW58MHx8fHwxNzU0NTQyOTMzfDA&ixlib=rb-4.1.0&q=85&w=400&h=300"
             })),
-            createdAt: new Date().toISOString()
-          };
+            createdAt: new Date().toISOString(),
+            // Add API key status even for successful calls if there was an issue
+            apiKeyStatus: apiKeyStatus,
+            providedApiKey: backendPayload.openai_api_key
+            };
         } else {
-          // API call failed, use mock
-          apiKeyStatus = backendPayload.openai_api_key ? 'invalid_key' : 'api_error';
-          throw new Error('API not available');
+            // API call failed, use mock
+            if (!apiKeyStatus) {
+            apiKeyStatus = backendPayload.openai_api_key ? 'invalid_key' : 'api_error';
+            }
+            throw new Error('API not available');
         }
-      } catch (error) {
+        } catch (error) {
         console.log('Using mock story generation');
         story = generateMockStory(formData);
         story.apiKeyStatus = apiKeyStatus;
         story.providedApiKey = backendPayload.openai_api_key;
-      }
+        }
 
-      onStoryGenerated(story);
-      navigate('/reader');
+        onStoryGenerated(story);
+        navigate('/reader');
     } catch (error) {
-      console.error('Error generating story:', error);
-      alert('Failed to generate story. Please try again.');
+        console.error('Error generating story:', error);
+        alert('Failed to generate story. Please try again.');
     } finally {
-      setIsGenerating(false);
+        setIsGenerating(false);
     }
-  };
+    };
 
   if (isGenerating) {
     return (

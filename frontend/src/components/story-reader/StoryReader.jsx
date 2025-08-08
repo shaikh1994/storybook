@@ -51,7 +51,13 @@ const StoryReader = ({ story, onCreateAnother }) => {
     }
   };
 
+  
   const toastInfo = getToastInfo();
+
+  console.log('Story object:', story);
+  console.log('Story apiKeyStatus:', story.apiKeyStatus);
+  console.log('Toast info:', toastInfo);
+  console.log('Show toast state:', showToast);
 
   // Auto-advance pages when reading
   useEffect(() => {
@@ -106,8 +112,10 @@ const StoryReader = ({ story, onCreateAnother }) => {
 
   const handleBuyProduct = () => {
     // TODO: Implement your product/subscription logic here
-    alert('Product page coming soon! This will redirect to your pricing/subscription page.');
+    // alert('Product page coming soon! This will redirect to your pricing/subscription page.');
     // Future: navigate('/pricing') or window.open('https://your-product-page.com')
+
+    navigate('/pricing');
   };
 
   const exportToPDF = async () => {

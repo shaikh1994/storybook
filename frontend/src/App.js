@@ -9,6 +9,8 @@ import WelcomeScreen from "./components/welcome-screen/WelcomeScreen";
 import StoryCreationForm from "./components/story-creation-form/StoryCreationForm";
 import StoryReader from "./components/story-reader/StoryReader";
 import StoryGallery from "./components/story-gallery/StoryGallery";
+import MarketingHomepage from "./components/marketing-homepage/MarketingHomepage";
+import PricingPage from "./components/pricing/PricingPage";
 
 import "./App.css";
 
@@ -44,7 +46,7 @@ function App() {
           <Routes>
             <Route 
               path="/" 
-              element={<WelcomeScreen />} 
+              element={<MarketingHomepage />} 
             />
             <Route 
               path="/create" 
@@ -55,6 +57,10 @@ function App() {
                   onFormsLoaded={handleFormsLoaded}
                 />
               } 
+            />
+            <Route 
+              path="/pricing" 
+              element={<PricingPage />} 
             />
             <Route 
               path="/reader" 
@@ -78,7 +84,6 @@ function App() {
                 />
               } 
             />
-            {/* Redirect any unknown routes to home */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </AnimatePresence>
