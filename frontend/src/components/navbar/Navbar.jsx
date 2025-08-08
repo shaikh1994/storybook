@@ -1,14 +1,13 @@
 // src/components/navbar/Navbar.jsx
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { FaBook, FaPalette, FaMagic, FaHeart } from "react-icons/fa";
+import { FaBook, FaPalette, FaMagic, FaDollarSign } from "react-icons/fa";
 import "./Navbar.css";
 
 const Navbar = () => {
   const location = useLocation();
 
   const navItems = [
-    { path: "/", icon: FaBook, label: "Home" },
     { path: "/create", icon: FaMagic, label: "Create" },
     { path: "/gallery", icon: FaPalette, label: "Gallery" },
   ];
@@ -38,10 +37,10 @@ const Navbar = () => {
         </div>
 
         <div className="navbar-actions">
-          <button className="navbar-btn">
-            <FaHeart className="btn-icon" />
-            <span>Favorites</span>
-          </button>
+          <Link to="/pricing" className="navbar-btn">
+            <FaDollarSign className="btn-icon" />
+            <span>Pricing</span>
+          </Link>
         </div>
       </div>
     </nav>

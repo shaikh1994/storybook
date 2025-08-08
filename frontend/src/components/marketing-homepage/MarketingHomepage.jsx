@@ -1,6 +1,6 @@
+// src/components/marketing-homepage/MarketingHomepage.jsx
 import React, { useState, useEffect } from 'react';
-
-
+import { useNavigate } from 'react-router-dom';
 import { 
   Play, 
   Rocket,
@@ -14,56 +14,116 @@ import {
   Clock,
   ChevronDown,
   ChevronUp,
-  Sparkles
+  Sparkles,
+  Zap,
+  Users,
+  Award,
+  TrendingUp,
+  Palette,
+  Shield
 } from "lucide-react";
-
-import { useNavigate } from 'react-router-dom';
-
+import './MarketingHomepage.css';
 
 const MarketingHomepage = () => {
   const navigate = useNavigate();
   const [showComingSoon, setShowComingSoon] = useState(false);
+  const [isVisible, setIsVisible] = useState({});
   
   const handleNavigation = (path) => {
     navigate(path);
   };
 
+  // Intersection Observer for scroll animations
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(prev => ({
+              ...prev,
+              [entry.target.id]: true
+            }));
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    const elements = document.querySelectorAll('[data-animate]');
+    elements.forEach((el) => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, []);
+
   const consistencyFeatures = [
     {
-      icon: <Heart className="w-8 h-8" />,
+      icon: <Heart className="w-10 h-10" />,
       title: "Same Character Throughout",
-      description: "Your child's character looks identical in every single page"
+      description: "Your child's character looks identical in every single page, creating magical stories that feel real.",
+      gradient: "from-pink-500 to-rose-500"
     },
     {
-      icon: <Rocket className="w-8 h-8" />,
+      icon: <Rocket className="w-10 h-10" />,
       title: "Consistent World Building", 
-      description: "The magical world stays visually coherent from start to finish"
+      description: "The magical world stays visually coherent from start to finish, maintaining immersion.",
+      gradient: "from-purple-500 to-indigo-500"
     },
     {
-      icon: <Star className="w-8 h-8" />,
+      icon: <Award className="w-10 h-10" />,
       title: "Professional Quality",
-      description: "Stories that look like real children's books, not random AI images"
+      description: "Stories that look like real children's books, not random AI images stitched together.",
+      gradient: "from-emerald-500 to-teal-500"
+    }
+  ];
+
+  const advancedFeatures = [
+    {
+      icon: <Palette className="w-8 h-8" />,
+      title: "Smart Art Direction",
+      description: "AI maintains consistent art style and lighting across all pages",
+      color: "text-purple-600"
+    },
+    {
+      icon: <Users className="w-8 h-8" />,
+      title: "Character Memory",
+      description: "Advanced AI remembers every detail about your child's appearance",
+      color: "text-blue-600"
+    },
+    {
+      icon: <Shield className="w-8 h-8" />,
+      title: "Child-Safe Content",
+      description: "All stories are automatically screened for age-appropriate content",
+      color: "text-green-600"
+    },
+    {
+      icon: <TrendingUp className="w-8 h-8" />,
+      title: "Learning Focus",
+      description: "Stories can be tailored to educational themes and moral lessons",
+      color: "text-orange-600"
     }
   ];
 
   const comingSoonFeatures = [
     {
-      icon: <Mic className="w-8 h-8 text-blue-500" />,
+      icon: <Mic className="w-10 h-10 text-blue-500" />,
       title: "Audio Narration",
-      description: "Custom voice narration brings stories to life",
-      timeline: "Q3 2025"
+      description: "Custom voice narration brings stories to life with professional quality",
+      timeline: "Q3 2025",
+      bgColor: "from-blue-50 to-cyan-50"
     },
     {
-      icon: <Video className="w-8 h-8 text-red-500" />,
+      icon: <Video className="w-10 h-10 text-red-500" />,
       title: "YouTube Videos", 
-      description: "Transform stories into animated videos to share",
-      timeline: "Q4 2025"
+      description: "Transform stories into animated videos to share with family and friends",
+      timeline: "Q4 2025",
+      bgColor: "from-red-50 to-pink-50"
     },
     {
-      icon: <BookOpen className="w-8 h-8 text-green-500" />,
+      icon: <BookOpen className="w-10 h-10 text-green-500" />,
       title: "Amazon Publishing",
-      description: "Turn your stories into real books on Amazon",
-      timeline: "Q1 2026"
+      description: "Turn your stories into real printed books available on Amazon",
+      timeline: "Q1 2026",
+      bgColor: "from-green-50 to-emerald-50"
     }
   ];
 
@@ -72,140 +132,191 @@ const MarketingHomepage = () => {
       name: "Sarah M.",
       role: "Mother of 2",
       text: "Finally! A story generator where my daughter Emma actually looks like Emma in every page. She's obsessed with her adventures!",
-      rating: 5
+      rating: 5,
+      avatar: "👩‍🦰"
     },
     {
       name: "Michael K.", 
       role: "Father",
       text: "The character consistency is incredible. Other apps made my son look different on every page - this actually tells a cohesive story.",
-      rating: 5
+      rating: 5,
+      avatar: "👨‍🦲"
     },
     {
       name: "Lisa R.",
       role: "Teacher",
       text: "I use this for my classroom. Kids love seeing the same character grow throughout the story. It's like having custom children's books!",
-      rating: 5
+      rating: 5,
+      avatar: "👩‍🏫"
     }
   ];
 
+  const stats = [
+    { number: "50K+", label: "Stories Created", icon: <BookOpen className="w-6 h-6" /> },
+    { number: "15K+", label: "Happy Families", icon: <Heart className="w-6 h-6" /> },
+    { number: "4.9/5", label: "Parent Rating", icon: <Star className="w-6 h-6" /> },
+    { number: "98%", label: "Character Accuracy", icon: <Zap className="w-6 h-6" /> }
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50">
+    <div className="marketing-homepage">
       {/* Hero Section */}
-      <section className="relative overflow-hidden pt-20 pb-32">
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-pink-600/20"></div>
-        <div className="relative max-w-7xl mx-auto px-6">
-          <div className="text-center">
-            <div className="opacity-0 animate-[fadeInUp_0.8s_ease-out_forwards]">
-              <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-6">
-                Stories That Actually Look Like Stories
-              </h1>
+      <section className="hero-section">
+        <div className="hero-background"></div>
+        <div className="hero-content">
+          <div className="hero-text">
+            <div className="hero-badge">
+              <Sparkles className="w-4 h-4" />
+              <span>Revolutionary Character Consistency Technology</span>
             </div>
             
-            <div className="opacity-0 animate-[fadeInUp_0.8s_ease-out_0.2s_forwards]">
-              <p className="text-xl md:text-2xl text-gray-700 mb-12 max-w-4xl mx-auto leading-relaxed">
-                The first AI story generator with <span className="font-semibold text-purple-600">true character consistency</span>. 
-                Your child's character looks identical in every single page, creating magical stories that feel real.
-              </p>
+            <h1 className="hero-title">
+              Create Magical
+              <span className="hero-title-gradient"> Personalized </span>
+              Stories for Your Child
+            </h1>
+            
+            <p className="hero-description">
+              The first AI story generator that keeps your child's character looking exactly the same throughout the entire story. 
+              Your child's character looks identical in every single page, creating magical stories that feel real.
+            </p>
+
+            <div className="hero-actions">
+              <button
+                onClick={() => handleNavigation('/create')}
+                className="btn-primary"
+              >
+                <Play className="w-5 h-5" />
+                Try Free Demo
+              </button>
+              
+              <button
+                onClick={() => handleNavigation('/pricing')}
+                className="btn-secondary"
+              >
+                <Rocket className="w-5 h-5" />
+                View Pricing
+              </button>
             </div>
 
-            <div className="opacity-0 animate-[fadeInUp_0.8s_ease-out_0.4s_forwards]">
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <button
-                  onClick={() => handleNavigation('/create')}
-                  className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-2xl font-semibold text-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center gap-3"
-                >
-                  <Play className="w-5 h-5" />
-                  Try Free Demo
-                </button>
-                
-                <button
-                  onClick={() => handleNavigation('/pricing')}
-                  className="bg-white text-purple-600 px-8 py-4 rounded-2xl font-semibold text-lg border-2 border-purple-200 hover:border-purple-400 hover:shadow-xl transition-all duration-300 flex items-center gap-3"
-                >
-                  <Rocket className="w-5 h-5" />
-                  View Pricing
-                </button>
-              </div>
+            <div className="hero-stats">
+              {stats.map((stat, index) => (
+                <div key={index} className="stat-item">
+                  <div className="stat-icon">{stat.icon}</div>
+                  <div className="stat-number">{stat.number}</div>
+                  <div className="stat-label">{stat.label}</div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
       {/* Character Consistency Demo */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+      <section className="demo-section" data-animate id="demo">
+        <div className="section-container">
+          <div className="section-header">
+            <h2 className="section-title">
               The Problem With Other AI Story Generators
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="section-description">
               Most AI tools create disconnected images that confuse children. We solved this.
             </p>
           </div>
 
-          {/* Before/After Comparison */}
-          <div className="grid md:grid-cols-2 gap-12 mb-20">
-            {/* Other Tools */}
-            <div className="opacity-0 animate-[slideInLeft_0.8s_ease-out_forwards] text-center">
-              <h3 className="text-2xl font-bold text-red-600 mb-6">❌ Other AI Tools</h3>
-              <div className="bg-red-50 p-6 rounded-2xl border-2 border-red-200">
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div className="bg-gray-200 h-32 rounded-lg flex items-center justify-center">
-                    <span className="text-gray-500">Character A</span>
-                  </div>
-                  <div className="bg-gray-200 h-32 rounded-lg flex items-center justify-center">
-                    <span className="text-gray-500">Character B</span>
-                  </div>
-                  <div className="bg-gray-200 h-32 rounded-lg flex items-center justify-center">
-                    <span className="text-gray-500">Character C</span>
-                  </div>
-                  <div className="bg-gray-200 h-32 rounded-lg flex items-center justify-center">
-                    <span className="text-gray-500">Character D</span>
-                  </div>
-                </div>
-                <p className="text-red-700 font-medium">Every page shows a different character. Kids get confused!</p>
+          <div className="demo-comparison">
+            {/* Bad Example */}
+            <div className="comparison-card comparison-bad">
+              <div className="comparison-header">
+                <h3 className="comparison-title bad">Other AI Tools</h3>
+                <span className="comparison-badge bad">❌ Inconsistent</span>
               </div>
+              <div className="character-grid">
+                <div className="character-item">
+                  <div className="character-placeholder bad-1"></div>
+                  <span>Page 1: Different hair</span>
+                </div>
+                <div className="character-item">
+                  <div className="character-placeholder bad-2"></div>
+                  <span>Page 2: Different face</span>
+                </div>
+                <div className="character-item">
+                  <div className="character-placeholder bad-3"></div>
+                  <span>Page 3: Different style</span>
+                </div>
+              </div>
+              <p className="comparison-feedback bad">Kids get confused and lose interest!</p>
             </div>
 
-            {/* Our Tool */}
-            <div className="opacity-0 animate-[slideInRight_0.8s_ease-out_forwards] text-center">
-              <h3 className="text-2xl font-bold text-green-600 mb-6">✅ Our AI Stories</h3>
-              <div className="bg-green-50 p-6 rounded-2xl border-2 border-green-200">
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div className="bg-gradient-to-br from-purple-400 to-pink-400 h-32 rounded-lg flex items-center justify-center">
-                    <span className="text-white font-bold">Same Emma</span>
-                  </div>
-                  <div className="bg-gradient-to-br from-purple-400 to-pink-400 h-32 rounded-lg flex items-center justify-center">
-                    <span className="text-white font-bold">Same Emma</span>
-                  </div>
-                  <div className="bg-gradient-to-br from-purple-400 to-pink-400 h-32 rounded-lg flex items-center justify-center">
-                    <span className="text-white font-bold">Same Emma</span>
-                  </div>
-                  <div className="bg-gradient-to-br from-purple-400 to-pink-400 h-32 rounded-lg flex items-center justify-center">
-                    <span className="text-white font-bold">Same Emma</span>
-                  </div>
-                </div>
-                <p className="text-green-700 font-medium">Perfect character consistency creates immersive stories!</p>
+            {/* Good Example */}
+            <div className="comparison-card comparison-good">
+              <div className="comparison-header">
+                <h3 className="comparison-title good">StoryBook Creator</h3>
+                <span className="comparison-badge good">✅ Perfect Consistency</span>
               </div>
+              <div className="character-grid">
+                <div className="character-item">
+                  <div className="character-placeholder good"></div>
+                  <span>Page 1: Same Emma</span>
+                </div>
+                <div className="character-item">
+                  <div className="character-placeholder good"></div>
+                  <span>Page 2: Same Emma</span>
+                </div>
+                <div className="character-item">
+                  <div className="character-placeholder good"></div>
+                  <span>Page 3: Same Emma</span>
+                </div>
+              </div>
+              <p className="comparison-feedback good">Perfect character consistency creates immersive stories!</p>
             </div>
           </div>
 
           {/* Feature Highlights */}
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="features-grid">
             {consistencyFeatures.map((feature, index) => (
               <div
                 key={index}
-                className={`opacity-0 animate-[fadeInUp_0.6s_ease-out_${0.2 * index}s_forwards] text-center p-8 bg-gradient-to-br from-white to-purple-50 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300`}
+                className={`feature-card ${isVisible.demo ? 'animate-in' : ''}`}
+                style={{ animationDelay: `${index * 200}ms` }}
               >
-                <div className="text-purple-600 mb-4 flex justify-center">
+                <div className={`feature-icon bg-gradient-to-r ${feature.gradient}`}>
                   {feature.icon}
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-600">
-                  {feature.description}
-                </p>
+                <h3 className="feature-title">{feature.title}</h3>
+                <p className="feature-description">{feature.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Advanced Features */}
+      <section className="advanced-features-section" data-animate id="advanced">
+        <div className="section-container">
+          <div className="section-header">
+            <h2 className="section-title">
+              Powered by Advanced AI Technology
+            </h2>
+            <p className="section-description">
+              Our proprietary algorithms ensure every story is a masterpiece
+            </p>
+          </div>
+
+          <div className="advanced-features-grid">
+            {advancedFeatures.map((feature, index) => (
+              <div
+                key={index}
+                className={`advanced-feature-card ${isVisible.advanced ? 'animate-in' : ''}`}
+                style={{ animationDelay: `${index * 150}ms` }}
+              >
+                <div className={`advanced-feature-icon ${feature.color}`}>
+                  {feature.icon}
+                </div>
+                <div className="advanced-feature-content">
+                  <h3 className="advanced-feature-title">{feature.title}</h3>
+                  <p className="advanced-feature-description">{feature.description}</p>
+                </div>
               </div>
             ))}
           </div>
@@ -213,15 +324,13 @@ const MarketingHomepage = () => {
       </section>
 
       {/* Coming Soon Features */}
-      <section className="py-20 bg-gradient-to-br from-indigo-50 to-purple-50">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">
-              Even More Magic Coming Soon
-            </h2>
+      <section className="coming-soon-section" data-animate id="coming-soon">
+        <div className="section-container">
+          <div className="section-header">
+            <h2 className="section-title">Even More Magic Coming Soon</h2>
             <button
               onClick={() => setShowComingSoon(!showComingSoon)}
-              className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 flex items-center gap-2 mx-auto"
+              className="coming-soon-toggle"
             >
               <Clock className="w-5 h-5" />
               See Future Updates
@@ -229,37 +338,29 @@ const MarketingHomepage = () => {
             </button>
           </div>
 
-          <div
-            className={`transition-all duration-500 overflow-hidden ${showComingSoon ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'}`}
-          >
-            <div className="grid md:grid-cols-3 gap-8 pt-8">
+          <div className={`coming-soon-content ${showComingSoon ? 'expanded' : ''}`}>
+            <div className="coming-soon-grid">
               {comingSoonFeatures.map((feature, index) => (
                 <div
                   key={index}
-                  className={`bg-white p-8 rounded-2xl shadow-lg text-center border-2 border-gray-100 transition-all duration-300 ${showComingSoon ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}
+                  className={`coming-soon-card bg-gradient-to-br ${feature.bgColor}`}
                   style={{ transitionDelay: `${index * 100}ms` }}
                 >
-                  <div className="mb-4 flex justify-center">
+                  <div className="coming-soon-icon">
                     {feature.icon}
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-3">
-                    {feature.title}
-                  </h3>
-                  <p className="text-gray-600 mb-4">
-                    {feature.description}
-                  </p>
-                  <span className="inline-block bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 px-3 py-1 rounded-full text-sm font-medium">
-                    {feature.timeline}
-                  </span>
+                  <h3 className="coming-soon-title">{feature.title}</h3>
+                  <p className="coming-soon-description">{feature.description}</p>
+                  <span className="coming-soon-timeline">{feature.timeline}</span>
                 </div>
               ))}
             </div>
             
-            <div className="text-center mt-12">
-              <p className="text-gray-600 mb-6">Join thousands of families already creating magical stories</p>
+            <div className="coming-soon-cta">
+              <p className="coming-soon-cta-text">Join thousands of families already creating magical stories</p>
               <button
                 onClick={() => handleNavigation('/pricing')}
-                className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-2xl font-semibold text-lg hover:shadow-xl hover:scale-105 transition-all duration-300 flex items-center gap-3 mx-auto"
+                className="coming-soon-cta-button"
               >
                 <Rocket className="w-5 h-5" />
                 Get Early Access
@@ -271,56 +372,56 @@ const MarketingHomepage = () => {
       </section>
 
       {/* Social Proof */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">
-              Parents Love Our Stories
-            </h2>
-            <p className="text-xl text-gray-600">
+      <section className="testimonials-section" data-animate id="testimonials">
+        <div className="section-container">
+          <div className="section-header">
+            <h2 className="section-title">Parents Love Our Stories</h2>
+            <p className="section-description">
               Real feedback from families using our AI story generator
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="testimonials-grid">
             {testimonials.map((testimonial, index) => (
               <div
                 key={index}
-                className={`opacity-0 animate-[fadeInUp_0.6s_ease-out_${0.2 * index}s_forwards] bg-gradient-to-br from-white to-purple-50 p-8 rounded-2xl shadow-lg border border-purple-100`}
+                className={`testimonial-card ${isVisible.testimonials ? 'animate-in' : ''}`}
+                style={{ animationDelay: `${index * 200}ms` }}
               >
-                <div className="flex mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
-                  ))}
+                <div className="testimonial-header">
+                  <div className="testimonial-avatar">{testimonial.avatar}</div>
+                  <div className="testimonial-info">
+                    <h4 className="testimonial-name">{testimonial.name}</h4>
+                    <p className="testimonial-role">{testimonial.role}</p>
+                  </div>
+                  <div className="testimonial-rating">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <Star key={i} className="w-4 h-4 fill-current text-yellow-400" />
+                    ))}
+                  </div>
                 </div>
-                <p className="text-gray-700 italic mb-6">
-                  "{testimonial.text}"
-                </p>
-                <div>
-                  <p className="font-semibold text-gray-900">{testimonial.name}</p>
-                  <p className="text-sm text-gray-600">{testimonial.role}</p>
-                </div>
+                <p className="testimonial-text">"{testimonial.text}"</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-purple-600 to-pink-600">
-        <div className="max-w-4xl mx-auto text-center px-6">
-          <div className="opacity-0 animate-[fadeInScale_0.8s_ease-out_forwards]">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Ready to Create Magic?
+      {/* Final CTA */}
+      <section className="final-cta-section">
+        <div className="final-cta-content">
+          <div className="final-cta-text">
+            <h2 className="final-cta-title">
+              Ready to Create Magical Stories?
             </h2>
-            <p className="text-xl text-purple-100 mb-10">
+            <p className="final-cta-description">
               Join thousands of families creating consistent, beautiful stories that kids actually love.
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="final-cta-actions">
               <button
                 onClick={() => handleNavigation('/create')}
-                className="bg-white text-purple-600 px-8 py-4 rounded-2xl font-semibold text-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center gap-3 justify-center"
+                className="final-cta-primary"
               >
                 <Play className="w-5 h-5" />
                 Start Free Demo
@@ -328,7 +429,7 @@ const MarketingHomepage = () => {
               
               <button
                 onClick={() => handleNavigation('/pricing')}
-                className="bg-purple-700 text-white px-8 py-4 rounded-2xl font-semibold text-lg border-2 border-purple-500 hover:bg-purple-800 hover:shadow-xl transition-all duration-300 flex items-center gap-3 justify-center"
+                className="final-cta-secondary"
               >
                 <Sparkles className="w-5 h-5" />
                 Choose Your Bundle
@@ -339,74 +440,28 @@ const MarketingHomepage = () => {
       </section>
 
       {/* Trust Indicators */}
-      <section className="py-12 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-6">
-          <div className="flex flex-wrap justify-center items-center gap-8 text-gray-500">
-            <div className="flex items-center gap-2">
+      <section className="trust-section">
+        <div className="section-container">
+          <div className="trust-indicators">
+            <div className="trust-item">
               <CheckCircle className="w-5 h-5 text-green-500" />
               <span>Safe for Kids</span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="trust-item">
               <CheckCircle className="w-5 h-5 text-green-500" />
               <span>No Subscription Required</span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="trust-item">
               <CheckCircle className="w-5 h-5 text-green-500" />
               <span>Instant Generation</span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="trust-item">
               <CheckCircle className="w-5 h-5 text-green-500" />
               <span>Professional Quality</span>
             </div>
           </div>
         </div>
       </section>
-
-      <style jsx>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes slideInLeft {
-          from {
-            opacity: 0;
-            transform: translateX(-50px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-
-        @keyframes slideInRight {
-          from {
-            opacity: 0;
-            transform: translateX(50px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-
-        @keyframes fadeInScale {
-          from {
-            opacity: 0;
-            transform: scale(0.9);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1);
-          }
-        }
-      `}</style>
     </div>
   );
 };
