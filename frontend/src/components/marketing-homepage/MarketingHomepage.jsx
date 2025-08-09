@@ -183,7 +183,7 @@ const MarketingHomepage = () => {
 
             <div className="hero-actions">
               <button
-                onClick={() => handleNavigation('/create')}
+                onClick={() => handleNavigation('/demo')}
                 className="btn-primary"
               >
                 <Play className="w-5 h-5" />
@@ -423,7 +423,7 @@ const MarketingHomepage = () => {
             
             <div className="final-cta-actions">
               <button
-                onClick={() => handleNavigation('/create')}
+                onClick={() => handleNavigation('/demo')}
                 className="final-cta-primary"
               >
                 <Play className="w-5 h-5" />

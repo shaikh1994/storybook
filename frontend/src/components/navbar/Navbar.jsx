@@ -8,7 +8,7 @@ const Navbar = () => {
   const location = useLocation();
 
   const navItems = [
-    { path: "/create", icon: FaMagic, label: "Create" },
+    { path: "/demo", icon: FaMagic, label: "Demo" },
     { path: "/gallery", icon: FaPalette, label: "Gallery" },
   ];
 

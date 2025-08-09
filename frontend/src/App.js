@@ -49,6 +49,10 @@ function App() {
               element={<MarketingHomepage />} 
             />
             <Route 
+              path="/demo" 
+              element={<WelcomeScreen />} 
+            />
+            <Route 
               path="/create" 
               element={
                 <StoryCreationForm 
