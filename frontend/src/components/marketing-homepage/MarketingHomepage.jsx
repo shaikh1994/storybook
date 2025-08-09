@@ -83,12 +83,12 @@ const MarketingHomepage = () => {
       description: "AI maintains consistent art style and lighting across all pages",
       color: "text-purple-600"
     },
-    {
-      icon: <Users className="w-8 h-8" />,
-      title: "Character Memory",
-      description: "Advanced AI remembers every detail about your child's appearance",
-      color: "text-blue-600"
-    },
+    // {
+    //   icon: <Users className="w-8 h-8" />,
+    //   title: "Character Memory",
+    //   description: "Advanced AI remembers every detail about your child's appearance",
+    //   color: "text-blue-600"
+    // },
     {
       icon: <Shield className="w-8 h-8" />,
       title: "Child-Safe Content",
@@ -223,7 +223,7 @@ const MarketingHomepage = () => {
               Most AI tools create disconnected images that confuse children. We solved this.
             </p>
           </div>
-
+          
           <div className="demo-comparison">
             {/* Bad Example */}
             <div className="comparison-card comparison-bad">
@@ -231,6 +231,7 @@ const MarketingHomepage = () => {
                 <h3 className="comparison-title bad">Other AI Tools</h3>
                 <span className="comparison-badge bad">❌ Inconsistent</span>
               </div>
+              
               <div className="character-grid">
                 <div className="character-item">
                   <div className="character-placeholder bad-1"></div>
@@ -245,15 +246,25 @@ const MarketingHomepage = () => {
                   <span>Page 3: Different style</span>
                 </div>
               </div>
-              <p className="comparison-feedback bad">Kids get confused and lose interest!</p>
+              
+              <div className="comparison-feedback bad">
+                <div className="emotion-indicator">😕</div>
+                Kids get confused and lose interest!
+              </div>
+              
+              <div className="callout problem">
+                <span className="callout-icon">⚠️</span>
+                <span>Character looks different on every page, breaking immersion</span>
+              </div>
             </div>
-
+            
             {/* Good Example */}
             <div className="comparison-card comparison-good">
               <div className="comparison-header">
                 <h3 className="comparison-title good">StoryBook Creator</h3>
                 <span className="comparison-badge good">✅ Perfect Consistency</span>
               </div>
+              
               <div className="character-grid">
                 <div className="character-item">
                   <div className="character-placeholder good"></div>
@@ -268,25 +279,17 @@ const MarketingHomepage = () => {
                   <span>Page 3: Same Emma</span>
                 </div>
               </div>
-              <p className="comparison-feedback good">Perfect character consistency creates immersive stories!</p>
-            </div>
-          </div>
-
-          {/* Feature Highlights */}
-          <div className="features-grid">
-            {consistencyFeatures.map((feature, index) => (
-              <div
-                key={index}
-                className={`feature-card ${isVisible.demo ? 'animate-in' : ''}`}
-                style={{ animationDelay: `${index * 200}ms` }}
-              >
-                <div className={`feature-icon bg-gradient-to-r ${feature.gradient}`}>
-                  {feature.icon}
-                </div>
-                <h3 className="feature-title">{feature.title}</h3>
-                <p className="feature-description">{feature.description}</p>
+              
+              <div className="comparison-feedback good">
+                <div className="emotion-indicator">🤩</div>
+                Perfect character consistency creates immersive stories!
               </div>
-            ))}
+              
+              <div className="callout solution">
+                <span className="callout-icon">✨</span>
+                <span>Same character throughout, just like real children's books</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>

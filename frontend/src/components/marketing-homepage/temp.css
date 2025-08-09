@@ -1,5 +1,5 @@
 /* src/components/marketing-homepage/MarketingHomepage.css */
-/* COMPLETE VERSION - All styles properly scoped with enhanced comparison section */
+/* FIXED VERSION - All styles properly scoped to .marketing-homepage */
 
 /* Import font ONLY for this component */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
@@ -130,164 +130,6 @@
   overflow: hidden;
 }
 
-.marketing-homepage .final-cta-secondary:hover {
-  background: rgba(255, 255, 255, 0.25);
-  border-color: rgba(255, 255, 255, 0.5);
-  transform: translateY(-3px);
-}
-
-/* Trust Section */
-.marketing-homepage .trust-section {
-  padding: 3rem 0;
-  background: #f9fafb;
-}
-
-.marketing-homepage .trust-indicators {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 2rem;
-}
-
-.marketing-homepage .trust-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #6b7280;
-  font-weight: 500;
-  padding: 0.5rem 1rem;
-  background: white;
-  border-radius: 2rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
-}
-
-.marketing-homepage .trust-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-/* Animations */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideInUp {
-  from {
-    opacity: 0;
-    transform: translateY(40px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideInRight {
-  from {
-    opacity: 0;
-    transform: translateX(-30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes fadeInScale {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .marketing-homepage .hero-title {
-    font-size: 2.5rem;
-  }
-  
-  .marketing-homepage .hero-description {
-    font-size: 1.125rem;
-  }
-  
-  .marketing-homepage .section-title {
-    font-size: 2rem;
-  }
-  
-  .marketing-homepage .section-description {
-    font-size: 1.125rem;
-  }
-  
-  .marketing-homepage .character-grid {
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
-  }
-  
-  .marketing-homepage .character-placeholder {
-    height: 6rem;
-    font-size: 2rem;
-  }
-  
-  .marketing-homepage .feature-card,
-  .marketing-homepage .advanced-feature-card,
-  .marketing-homepage .testimonial-card {
-    padding: 1.5rem;
-  }
-  
-  .marketing-homepage .final-cta-title {
-    font-size: 2.5rem;
-  }
-  
-  .marketing-homepage .trust-indicators {
-    gap: 1rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .marketing-homepage .section-container {
-    padding: 0 1rem;
-  }
-  
-  .marketing-homepage .hero-content {
-    padding: 0 1rem;
-  }
-  
-  .marketing-homepage .hero-stats {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-  }
-  
-  .marketing-homepage .features-grid,
-  .marketing-homepage .advanced-features-grid,
-  .marketing-homepage .testimonials-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
 .marketing-homepage .btn-primary::before {
   content: '';
   position: absolute;
@@ -325,6 +167,49 @@
 }
 
 .marketing-homepage .btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-3px);
+}
+
+.marketing-homepage .hero-primary-button {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: white;
+  color: #667eea;
+  padding: 1rem 2rem;
+  border-radius: 1rem;
+  font-weight: 600;
+  font-size: 1.125rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
+}
+
+.marketing-homepage .hero-primary-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 35px rgba(255, 255, 255, 0.3);
+}
+
+.marketing-homepage .hero-secondary-button {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 1rem;
+  font-weight: 600;
+  font-size: 1.125rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.marketing-homepage .hero-secondary-button:hover {
   background: rgba(255, 255, 255, 0.25);
   border-color: rgba(255, 255, 255, 0.5);
   transform: translateY(-3px);
@@ -430,7 +315,6 @@
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
   border: 2px solid transparent;
-  position: relative;
 }
 
 .marketing-homepage .comparison-bad {
@@ -480,7 +364,6 @@
   color: #059669;
 }
 
-/* Enhanced Character Grid with Emojis */
 .marketing-homepage .character-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -493,25 +376,17 @@
 }
 
 .marketing-homepage .character-placeholder {
-  height: 8rem;
-  border-radius: 1rem;
-  margin-bottom: 0.75rem;
+  height: 6rem;
+  border-radius: 0.75rem;
+  margin-bottom: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 600;
   color: white;
-  font-size: 3rem;
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s ease;
+  font-size: 0.875rem;
 }
 
-.marketing-homepage .character-placeholder:hover {
-  transform: scale(1.05);
-}
-
-/* Bad examples - different characters */
 .marketing-homepage .character-placeholder.bad-1 {
   background: linear-gradient(135deg, #ef4444, #dc2626);
 }
@@ -524,35 +399,16 @@
   background: linear-gradient(135deg, #eab308, #ca8a04);
 }
 
-/* Good examples - same character */
 .marketing-homepage .character-placeholder.good {
   background: linear-gradient(135deg, #8b5cf6, #7c3aed);
 }
 
-/* Add character emojis */
-.marketing-homepage .character-placeholder.bad-1::after {
-  content: '👦🏽';
-}
-
-.marketing-homepage .character-placeholder.bad-2::after {
-  content: '🧒🏻';
-}
-
-.marketing-homepage .character-placeholder.bad-3::after {
-  content: '👧🏾';
-}
-
-.marketing-homepage .character-placeholder.good::after {
-  content: '👦🏽';
-}
-
 .marketing-homepage .character-item span {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: #6b7280;
   font-weight: 500;
 }
 
-/* Enhanced Feedback Section */
 .marketing-homepage .comparison-feedback {
   font-weight: 600;
   text-align: center;
@@ -594,6 +450,10 @@
 }
 
 /* Visual background improvements */
+.marketing-homepage .comparison-card.comparison-bad {
+  position: relative;
+}
+
 .marketing-homepage .comparison-card.comparison-bad::before {
   content: '';
   position: absolute;
@@ -654,6 +514,13 @@
   font-size: 1.2rem;
 }
 
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .marketing-homepage .character-placeholder {
+    height: 6rem;
+    font-size: 2rem;
+  }
+}
 /* Features Grid */
 .marketing-homepage .features-grid {
   display: grid;
@@ -1086,175 +953,236 @@
 }
 
 .marketing-homepage .final-cta-secondary {
- display: flex;
- align-items: center;
- gap: 0.75rem;
- background: rgba(255, 255, 255, 0.15);
- color: white;
- padding: 1rem 2rem;
- border-radius: 1rem;
- font-weight: 600;
- font-size: 1.125rem;
- border: 2px solid rgba(255, 255, 255, 0.3);
- cursor: pointer;
- transition: all 0.3s ease;
- backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 1rem;
+  font-weight: 600;
+  font-size: 1.125rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
 }
 
 .marketing-homepage .final-cta-secondary:hover {
- background: rgba(255, 255, 255, 0.25);
- border-color: rgba(255, 255, 255, 0.5);
- transform: translateY(-3px);
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-3px);
 }
 
 /* Trust Section */
 .marketing-homepage .trust-section {
- padding: 3rem 0;
- background: #f9fafb;
+  padding: 3rem 0;
+  background: #f9fafb;
 }
 
 .marketing-homepage .trust-indicators {
- display: flex;
- flex-wrap: wrap;
- justify-content: center;
- align-items: center;
- gap: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
 }
 
 .marketing-homepage .trust-item {
- display: flex;
- align-items: center;
- gap: 0.5rem;
- color: #6b7280;
- font-weight: 500;
- padding: 0.5rem 1rem;
- background: white;
- border-radius: 2rem;
- box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
- transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #6b7280;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  background: white;
+  border-radius: 2rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
 }
 
 .marketing-homepage .trust-item:hover {
- transform: translateY(-2px);
- box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 /* Animations */
 @keyframes fadeInUp {
- from {
-   opacity: 0;
-   transform: translateY(30px);
- }
- to {
-   opacity: 1;
-   transform: translateY(0);
- }
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes slideInUp {
- from {
-   opacity: 0;
-   transform: translateY(40px);
- }
- to {
-   opacity: 1;
-   transform: translateY(0);
- }
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes slideInRight {
- from {
-   opacity: 0;
-   transform: translateX(-30px);
- }
- to {
-   opacity: 1;
-   transform: translateX(0);
- }
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 @keyframes slideInLeft {
- from {
-   opacity: 0;
-   transform: translateX(30px);
- }
- to {
-   opacity: 1;
-   transform: translateX(0);
- }
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 @keyframes fadeInScale {
- from {
-   opacity: 0;
-   transform: scale(0.9);
- }
- to {
-   opacity: 1;
-   transform: scale(1);
- }
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
- .marketing-homepage .hero-title {
-   font-size: 2.5rem;
- }
- 
- .marketing-homepage .hero-description {
-   font-size: 1.125rem;
- }
- 
- .marketing-homepage .section-title {
-   font-size: 2rem;
- }
- 
- .marketing-homepage .section-description {
-   font-size: 1.125rem;
- }
- 
- .marketing-homepage .character-grid {
-   grid-template-columns: 1fr;
-   gap: 0.75rem;
- }
- 
- .marketing-homepage .character-placeholder {
-   height: 6rem;
-   font-size: 2rem;
- }
- 
- .marketing-homepage .feature-card,
- .marketing-homepage .advanced-feature-card,
- .marketing-homepage .testimonial-card {
-   padding: 1.5rem;
- }
- 
- .marketing-homepage .final-cta-title {
-   font-size: 2.5rem;
- }
- 
- .marketing-homepage .trust-indicators {
-   gap: 1rem;
- }
+  .marketing-homepage .hero-title {
+    font-size: 2.5rem;
+  }
+  
+  .marketing-homepage .hero-description {
+    font-size: 1.125rem;
+  }
+  
+  .marketing-homepage .section-title {
+    font-size: 2rem;
+  }
+  
+  .marketing-homepage .section-description {
+    font-size: 1.125rem;
+  }
+  
+    .marketing-homepage .character-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    }
+
+    .marketing-homepage .character-item {
+    text-align: center;
+    }
+
+    .marketing-homepage .character-placeholder {
+    height: 8rem;
+    border-radius: 1rem;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: white;
+    font-size: 3rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    }
+
+    .marketing-homepage .character-placeholder:hover {
+    transform: scale(1.05);
+    }
+
+    /* Bad examples - different characters */
+    .marketing-homepage .character-placeholder.bad-1 {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    }
+
+    .marketing-homepage .character-placeholder.bad-2 {
+    background: linear-gradient(135deg, #f97316, #ea580c);
+    }
+
+    .marketing-homepage .character-placeholder.bad-3 {
+    background: linear-gradient(135deg, #eab308, #ca8a04);
+    }
+
+    /* Good examples - same character */
+    .marketing-homepage .character-placeholder.good {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    }
+
+    /* Add character emojis */
+    .marketing-homepage .character-placeholder.bad-1::after {
+    content: '👦🏽';
+    }
+
+    .marketing-homepage .character-placeholder.bad-2::after {
+    content: '🧒🏻';
+    }
+
+    .marketing-homepage .character-placeholder.bad-3::after {
+    content: '👧🏾';
+    }
+
+    .marketing-homepage .character-placeholder.good::after {
+    content: '👦🏽';
+    }
+
+    .marketing-homepage .character-item span {
+    font-size: 0.8rem;
+    color: #6b7280;
+    font-weight: 500;
+    }
+  
+  .marketing-homepage .feature-card,
+  .marketing-homepage .advanced-feature-card,
+  .marketing-homepage .testimonial-card {
+    padding: 1.5rem;
+  }
+  
+  .marketing-homepage .final-cta-title {
+    font-size: 2.5rem;
+  }
+  
+  .marketing-homepage .trust-indicators {
+    gap: 1rem;
+  }
 }
 
 @media (max-width: 480px) {
- .marketing-homepage .section-container {
-   padding: 0 1rem;
- }
- 
- .marketing-homepage .hero-content {
-   padding: 0 1rem;
- }
- 
- .marketing-homepage .hero-stats {
-   grid-template-columns: repeat(2, 1fr);
-   gap: 1rem;
- }
- 
- .marketing-homepage .features-grid,
- .marketing-homepage .advanced-features-grid,
- .marketing-homepage .testimonials-grid {
-   grid-template-columns: 1fr;
- }
+  .marketing-homepage .section-container {
+    padding: 0 1rem;
+  }
+  
+  .marketing-homepage .hero-content {
+    padding: 0 1rem;
+  }
+  
+  .marketing-homepage .hero-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  
+  .marketing-homepage .features-grid,
+  .marketing-homepage .advanced-features-grid,
+  .marketing-homepage .testimonials-grid {
+    grid-template-columns: 1fr;
+  }
 }
