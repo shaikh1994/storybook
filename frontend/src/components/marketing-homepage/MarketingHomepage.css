@@ -210,7 +210,7 @@
 /* Demo Section */
 .demo-section {
   padding: 5rem 0;
-  background: white;
+  /* background: white; */
 }
 
 .demo-section .section-header {

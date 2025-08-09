@@ -1,13 +1,13 @@
-/* src/App.css - Zero Global Font/Size Interference */
+/* src/App.css - Consistent Font System */
 
-/* ABSOLUTELY NO GLOBAL FONT OR SIZE SETTINGS */
+/* Import Inter font globally for consistency */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
-/* Minimal Reset - Only what's absolutely necessary */
+/* Global Font Definition */
 * {
   box-sizing: border-box;
 }
 
-/* DO NOT set any font, font-size, or text styling on html/body */
 html {
   scroll-behavior: smooth;
 }
@@ -15,19 +15,71 @@ html {
 body {
   margin: 0;
   padding: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
-  /* NO font-family, NO font-size, NO color, NO background */
+  color: #374151;
 }
 
-/* App Container - Absolutely minimal */
+/* App Container */
 .App {
-  /* NO font, NO font-size, NO text-align */
   min-height: 100vh;
+  font-family: inherit; /* Ensure consistent inheritance */
 }
 
-/* Custom Scrollbar - This is safe to keep */
+/* Reset heading sizes to consistent values */
+h1 {
+  font-size: 2.25rem; /* 36px */
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0 0 1rem 0;
+}
+
+h2 {
+  font-size: 1.875rem; /* 30px */
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 0 0 0.75rem 0;
+}
+
+h3 {
+  font-size: 1.5rem; /* 24px */
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 0 0 0.5rem 0;
+}
+
+h4 {
+  font-size: 1.25rem; /* 20px */
+  font-weight: 500;
+  line-height: 1.4;
+  margin: 0 0 0.5rem 0;
+}
+
+h5 {
+  font-size: 1.125rem; /* 18px */
+  font-weight: 500;
+  line-height: 1.4;
+  margin: 0 0 0.5rem 0;
+}
+
+h6 {
+  font-size: 1rem; /* 16px */
+  font-weight: 500;
+  line-height: 1.4;
+  margin: 0 0 0.5rem 0;
+}
+
+/* Paragraph and text defaults */
+p {
+  margin: 0 0 1rem 0;
+  line-height: 1.6;
+}
+
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -47,7 +99,86 @@ body {
   background: linear-gradient(135deg, #7c3aed, #6d28d9);
 }
 
-/* Animation keyframes ONLY - no styling */
+/* Utility classes for consistent sizing */
+.text-xs { font-size: 0.75rem; }
+.text-sm { font-size: 0.875rem; }
+.text-base { font-size: 1rem; }
+.text-lg { font-size: 1.125rem; }
+.text-xl { font-size: 1.25rem; }
+.text-2xl { font-size: 1.5rem; }
+.text-3xl { font-size: 1.875rem; }
+.text-4xl { font-size: 2.25rem; }
+.text-5xl { font-size: 3rem; }
+
+/* Export Button */
+.export-button {
+  background: linear-gradient(135deg, #48bb78, #38a169);
+  transition: all 0.3s ease;
+}
+
+.export-button:hover {
+  background: linear-gradient(135deg, #38a169, #2f855a);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(72, 187, 120, 0.3);
+}
+
+.error-state {
+  background: linear-gradient(135deg, #fed7d7, #feb2b2);
+  color: #c53030;
+  border: 1px solid #fc8181;
+}
+
+.success-state {
+  background: linear-gradient(135deg, #c6f6d5, #9ae6b4);
+  color: #276749;
+  border: 1px solid #68d391;
+}
+
+.reading-mode {
+  background: #fffbf0;
+  color: #2d3748;
+  line-height: 1.8;
+  font-size: 1.1rem;
+}
+
+.backdrop-blur-custom {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+/* Range input styling */
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 8px;
+  border-radius: 5px;
+  background: #e2e8f0;
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+/* Animation keyframes */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -114,177 +245,21 @@ body {
 }
 
 @keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
+  to {
     transform: rotate(360deg);
   }
 }
 
-/* EXISTING COMPONENT CLASSES - Keep these exactly as they were */
-.floating-element {
-  animation: float 3s ease-in-out infinite;
-}
-
-.bounce-element {
-  animation: bounce 2s infinite;
-}
-
-.pulse-element {
-  animation: pulse 2s infinite;
-}
-
-.gradient-text {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.page-turn {
-  transform-origin: left center;
-  transition: transform 0.6s ease-in-out;
-}
-
-.page-turn.turning {
-  transform: rotateY(-180deg);
-}
-
-.loading-spinner {
-  width: 60px;
-  height: 60px;
-  border: 4px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  border-top-color: white;
-  animation: spin 1s ease-in-out infinite;
-}
-
-.story-page {
-  background: #fefefe;
-  background-image: 
-    radial-gradient(circle at 25px 25px, lightgray 2px, transparent 0),
-    radial-gradient(circle at 75px 75px, lightgray 2px, transparent 0);
-  background-size: 100px 100px;
-  box-shadow: 
-    0 4px 8px rgba(0,0,0,0.1),
-    inset 0 0 0 1px rgba(255,255,255,0.6);
-}
-
-.theme-card {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  transform-origin: center;
-}
-
-.theme-card:hover {
-  transform: translateY(-8px) scale(1.02);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-}
-
-.story-card {
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.story-card:hover {
-  transform: translateY(-10px) scale(1.03);
-  box-shadow: 0 25px 50px rgba(0,0,0,0.15);
-}
-
-.magic-button {
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s ease;
-}
-
-.magic-button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-  transition: left 0.5s ease;
-}
-
-.magic-button:hover::before {
-  left: 100%;
-}
-
-.export-button {
-  background: linear-gradient(135deg, #48bb78, #38a169);
-  transition: all 0.3s ease;
-}
-
-.export-button:hover {
-  background: linear-gradient(135deg, #38a169, #2f855a);
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(72, 187, 120, 0.3);
-}
-
-.error-state {
-  background: linear-gradient(135deg, #fed7d7, #feb2b2);
-  color: #c53030;
-  border: 1px solid #fc8181;
-}
-
-.success-state {
-  background: linear-gradient(135deg, #c6f6d5, #9ae6b4);
-  color: #276749;
-  border: 1px solid #68d391;
-}
-
-.reading-mode {
-  background: #fffbf0;
-  color: #2d3748;
-  line-height: 1.8;
-  font-size: 1.1rem;
-}
-
-.backdrop-blur-custom {
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  background-color: rgba(255, 255, 255, 0.7);
-}
-
-/* Range input styling - scoped to avoid conflicts */
-input[type="range"] {
-  -webkit-appearance: none;
-  width: 100%;
-  height: 8px;
-  border-radius: 5px;
-  background: #e2e8f0;
-  outline: none;
-}
-
-input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-}
-
-input[type="range"]::-moz-range-thumb {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  cursor: pointer;
-  border: none;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-}
-
-/* Responsive - ONLY affect font-size in specific contexts if absolutely needed */
+/* Responsive typography */
 @media (max-width: 768px) {
-  /* Remove the global font-size change that was affecting your create page */
-  .story-page {
-    margin: 10px;
-    padding: 20px;
+  body {
+    font-size: 14px;
   }
+  
+  h1 { font-size: 1.875rem; } /* 30px */
+  h2 { font-size: 1.5rem; }   /* 24px */
+  h3 { font-size: 1.25rem; }  /* 20px */
+  h4 { font-size: 1.125rem; } /* 18px */
 }
 
 /* Reduced Motion Support */
