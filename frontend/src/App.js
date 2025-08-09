@@ -1,5 +1,5 @@
 // src/App.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 
@@ -11,17 +11,38 @@ import StoryReader from "./components/story-reader/StoryReader";
 import StoryGallery from "./components/story-gallery/StoryGallery";
 import MarketingHomepage from "./components/marketing-homepage/MarketingHomepage";
 import PricingPage from "./components/pricing/PricingPage";
+import PDFGalleryViewer from './components/pdf-viewer/PDFGalleryViewer';
 
 import "./App.css";
 
 function App() {
+  // Consolidated state management
   const [currentStory, setCurrentStory] = useState(null);
-  const [savedStories, setSavedStories] = useState([]);
-  const [shouldPreserveForms, setShouldPreserveForms] = useState(false);
+  const [stories, setStories] = useState([]);
+  const [preserveFormData, setPreserveFormData] = useState(false);
 
-  const handleStoryGenerated = (story) => {
-    setCurrentStory(story);
-    setSavedStories(prev => [story, ...prev]);
+  // Load stories from localStorage on app start
+  useEffect(() => {
+    const savedStories = localStorage.getItem('storybook-stories');
+    if (savedStories) {
+      try {
+        setStories(JSON.parse(savedStories));
+      } catch (error) {
+        console.error('Error loading stories:', error);
+      }
+    }
+  }, []);
+  
+  // Save stories to localStorage whenever stories change
+  useEffect(() => {
+    localStorage.setItem('storybook-stories', JSON.stringify(stories));
+  }, [stories]);
+
+  // Handler functions
+  const handleStoryGenerated = (newStory) => {
+    setStories(prev => [newStory, ...prev]);
+    setCurrentStory(newStory); // Set as current story for immediate viewing
+    setPreserveFormData(false);
   };
 
   const handleSelectStory = (story) => {
@@ -29,13 +50,20 @@ function App() {
   };
 
   const handleCreateAnother = () => {
-    // Signal that we want to preserve form data when navigating to create page
-    setShouldPreserveForms(true);
+    setPreserveFormData(true);
+    setCurrentStory(null); // Clear current story when creating another
   };
 
-  // Reset the preserve flag when forms are loaded
+  const handleDeleteStory = (storyId) => {
+    setStories(prev => prev.filter(story => story.id !== storyId));
+    // If the deleted story is currently selected, clear it
+    if (currentStory && currentStory.id === storyId) {
+      setCurrentStory(null);
+    }
+  };
+
   const handleFormsLoaded = () => {
-    setShouldPreserveForms(false);
+    setPreserveFormData(false);
   };
 
   return (
@@ -44,28 +72,43 @@ function App() {
         <Navbar />
         <AnimatePresence mode="wait">
           <Routes>
+            {/* Marketing Homepage Route */}
             <Route 
               path="/" 
               element={<MarketingHomepage />} 
             />
+
+            {/* Demo/Welcome Route */}
             <Route 
               path="/demo" 
               element={<WelcomeScreen />} 
             />
+            
+            {/* Story Gallery Route */}
+            <Route 
+              path="/gallery" 
+              element={
+                <StoryGallery 
+                  stories={stories} 
+                  onSelectStory={handleSelectStory}
+                  onDeleteStory={handleDeleteStory}
+                />
+              } 
+            />
+            
+            {/* Story Creation Route */}
             <Route 
               path="/create" 
               element={
                 <StoryCreationForm 
                   onStoryGenerated={handleStoryGenerated}
-                  preserveForms={shouldPreserveForms}
+                  preserveForms={preserveFormData}
                   onFormsLoaded={handleFormsLoaded}
                 />
               } 
             />
-            <Route 
-              path="/pricing" 
-              element={<PricingPage />} 
-            />
+            
+            {/* Story Reader Route */}
             <Route 
               path="/reader" 
               element={
@@ -75,19 +118,24 @@ function App() {
                     onCreateAnother={handleCreateAnother}
                   />
                 ) : (
-                  <Navigate to="/" replace />
+                  <Navigate to="/gallery" replace />
                 )
               } 
             />
+            
+            {/* PDF Viewer Route */}
             <Route 
-              path="/gallery" 
-              element={
-                <StoryGallery 
-                  stories={savedStories}
-                  onSelectStory={handleSelectStory}
-                />
-              } 
+              path="/pdf-viewer" 
+              element={<PDFGalleryViewer />} 
             />
+
+            {/* Pricing Route */}
+            <Route 
+              path="/pricing" 
+              element={<PricingPage />} 
+            />
+
+            {/* Catch-all redirect */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </AnimatePresence>

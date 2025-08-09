@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.storybook.routers import router as storybook_router
 from dotenv import load_dotenv
+from fastapi.staticfiles import StaticFiles
 
 load_dotenv()
 
@@ -26,6 +27,9 @@ app.add_middleware(
 )
 
 app.get("/")(lambda: {"message": "Child Story Book API is running!"})
+
+app.mount("/static/uploads", StaticFiles(directory="uploads"), name="uploads")
+app.mount("/static/sample", StaticFiles(directory="sample"), name="sample")
 
 app.include_router(storybook_router)
 
