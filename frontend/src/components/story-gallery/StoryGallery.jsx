@@ -1,4 +1,6 @@
-// Updated StoryGallery.jsx
+// frontend/src/components/story-gallery/StoryGallery.jsx
+// Updated StoryGallery component to handle multiple PDFs
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -18,26 +20,26 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const StoryGallery = ({ stories = [], onSelectStory, onDeleteStory }) => {
   const navigate = useNavigate();
-  const [samplePdf, setSamplePdf] = useState(null);
-  const [loadingPdf, setLoadingPdf] = useState(true);
+  const [samplePdfs, setSamplePdfs] = useState([]); // Changed from single PDF to array
+  const [loadingPdfs, setLoadingPdfs] = useState(true);
 
-  // Load sample PDF data from backend
+  // Load sample PDFs list from backend
   useEffect(() => {
-    const loadSamplePdf = async () => {
+    const loadSamplePdfs = async () => {
       try {
-        const response = await fetch(`${BACKEND_URL}/storybook/sample/pdf-data`);
+        const response = await fetch(`${BACKEND_URL}/storybook/sample/pdf-list`);
         if (response.ok) {
-          const pdfData = await response.json();
-          setSamplePdf(pdfData);
+          const data = await response.json();
+          setSamplePdfs(data.pdfs || []);
         }
       } catch (error) {
-        console.error('Failed to load sample PDF:', error);
+        console.error('Failed to load sample PDFs:', error);
       } finally {
-        setLoadingPdf(false);
+        setLoadingPdfs(false);
       }
     };
 
-    loadSamplePdf();
+    loadSamplePdfs();
   }, []);
 
   const handleStoryClick = (story) => {
@@ -50,9 +52,18 @@ const StoryGallery = ({ stories = [], onSelectStory, onDeleteStory }) => {
     }
   };
 
-  const handlePdfClick = () => {
-    if (samplePdf) {
-      navigate('/pdf-viewer', { state: { pdfData: samplePdf } });
+  const handlePdfClick = async (pdfInfo) => {
+    try {
+      // Fetch the full PDF data when clicked
+      const response = await fetch(`${BACKEND_URL}/storybook/sample/pdf-data/${pdfInfo.id}`);
+      if (response.ok) {
+        const pdfData = await response.json();
+        navigate('/pdf-viewer', { state: { pdfData } });
+      } else {
+        console.error('Failed to load PDF data');
+      }
+    } catch (error) {
+      console.error('Error loading PDF:', error);
     }
   };
 
@@ -78,7 +89,7 @@ const StoryGallery = ({ stories = [], onSelectStory, onDeleteStory }) => {
           alt={story.title}
           className="card-image"
           onError={(e) => {
-            e.target.src = "https://images.unsplash.com/photo-1533561304446-88a43deb6229?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzV8MHwxfHNlYXJjaHwxfHxjaGlsZHJlbiUyMGJvb2t8ZW58MHx8fHwxNzU0NTQyOTM4fDA&ixlib=rb-4.1.0&q=85&w=600&h=400";
+            e.target.src = "https://images.unsplash.com/photo-1533561304446-88a43deb6229?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzV8MHwxfHNlYXJjaHwxfHxjaGlsZHJlbiUyMGJvb2t8ZW58MHx8fHwxNzU0NTQyOTM4fDA&ixlib=rb-4.0.3&q=80&w=1080";
           }}
         />
         <div className="image-overlay">
@@ -91,6 +102,7 @@ const StoryGallery = ({ stories = [], onSelectStory, onDeleteStory }) => {
       
       <div className="story-card-content">
         <h3 className="story-card-title">{story.title}</h3>
+        <p className="story-card-description">{story.description}</p>
         <div className="story-card-meta">
           <div className="meta-item">
             <FaBook className="meta-icon" />
@@ -101,10 +113,9 @@ const StoryGallery = ({ stories = [], onSelectStory, onDeleteStory }) => {
             <span>Illustrated</span>
           </div>
         </div>
-        <div className="story-card-date">
-          Created {new Date(story.createdAt).toLocaleDateString()}
-        </div>
-        
+      </div>
+      
+      <div className="story-card-actions">
         {onDeleteStory && (
           <button 
             className="delete-button"
@@ -122,55 +133,36 @@ const StoryGallery = ({ stories = [], onSelectStory, onDeleteStory }) => {
     </motion.div>
   );
 
-  const renderPdfCard = () => {
-    if (loadingPdf) {
-      return (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="story-card loading-card"
-        >
-          <div className="story-card-image">
-            <div className="loading-placeholder">
-              <div className="loading-spinner"></div>
-            </div>
-          </div>
-          <div className="story-card-content">
-            <h3 className="story-card-title">Loading PDF...</h3>
-          </div>
-        </motion.div>
-      );
-    }
-
-    if (!samplePdf) return null;
-
+  const renderPdfCard = (pdfInfo, index) => {
     return (
       <motion.div
+        key={pdfInfo.id}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: index * 0.1 }} // Stagger animation
         className="story-card pdf-card"
-        onClick={handlePdfClick}
+        onClick={() => handlePdfClick(pdfInfo)}
       >
         <div className="story-card-image">
           <div className="pdf-preview">
             <FaFilePdf className="pdf-icon" />
-            <div className="pdf-badge">PDF</div>
+            <div className="pdf-badge">SAMPLE</div>
           </div>
           <div className="image-overlay">
             <div className="overlay-content">
               <FaEye className="overlay-icon" />
-              <span>View PDF</span>
+              <span>View Sample</span>
             </div>
           </div>
         </div>
         
         <div className="story-card-content">
-          <h3 className="story-card-title">{samplePdf.title}</h3>
-          <p className="story-card-description">{samplePdf.description}</p>
+          <h3 className="story-card-title">{pdfInfo.title}</h3>
+          <p className="story-card-description">{pdfInfo.description}</p>
           <div className="story-card-meta">
             <div className="meta-item">
               <FaBook className="meta-icon" />
-              <span>{samplePdf.totalPages} pages</span>
+              <span>Sample Story</span>
             </div>
             <div className="meta-item">
               <FaFilePdf className="meta-icon" />
@@ -182,7 +174,7 @@ const StoryGallery = ({ stories = [], onSelectStory, onDeleteStory }) => {
               className="action-btn view-btn"
               onClick={(e) => {
                 e.stopPropagation();
-                handlePdfClick();
+                handlePdfClick(pdfInfo);
               }}
             >
               <FaEye /> View
@@ -191,8 +183,7 @@ const StoryGallery = ({ stories = [], onSelectStory, onDeleteStory }) => {
               className="action-btn download-btn"
               onClick={(e) => {
                 e.stopPropagation();
-                // Implement PDF download
-                window.open(`${BACKEND_URL}/static/sample/sample_storybook.pdf`, '_blank');
+                window.open(`${BACKEND_URL}${pdfInfo.download_url}`, '_blank');
               }}
             >
               <FaDownload /> Download
@@ -203,7 +194,26 @@ const StoryGallery = ({ stories = [], onSelectStory, onDeleteStory }) => {
     );
   };
 
-  const totalItems = stories.length + (samplePdf ? 1 : 0);
+  const renderLoadingPdfCards = () => {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="story-card loading-card"
+      >
+        <div className="story-card-image">
+          <div className="loading-placeholder">
+            <div className="loading-spinner"></div>
+          </div>
+        </div>
+        <div className="story-card-content">
+          <h3 className="story-card-title">Loading Sample Stories...</h3>
+        </div>
+      </motion.div>
+    );
+  };
+
+  const totalItems = stories.length + samplePdfs.length;
 
   return (
     <div className="story-gallery">
@@ -220,14 +230,12 @@ const StoryGallery = ({ stories = [], onSelectStory, onDeleteStory }) => {
           <div className="header-stats">
             <div className="stat-item">
               <FaBook className="stat-icon" />
-              <span>{stories.length} Stories</span>
+              <span>{stories.length} Created</span>
             </div>
-            {samplePdf && (
-              <div className="stat-item">
-                <FaFilePdf className="stat-icon" />
-                <span>1 PDF</span>
-              </div>
-            )}
+            <div className="stat-item">
+              <FaFilePdf className="stat-icon" />
+              <span>{samplePdfs.length} Samples</span>
+            </div>
             <div className="stat-item">
               <FaImage className="stat-icon" />
               <span>{totalItems} Total</span>
@@ -238,7 +246,7 @@ const StoryGallery = ({ stories = [], onSelectStory, onDeleteStory }) => {
 
       {/* Gallery Container */}
       <div className="gallery-container">
-        {totalItems === 0 ? (
+        {totalItems === 0 && !loadingPdfs ? (
           // Empty State
           <div className="empty-gallery">
             <div className="empty-content">
@@ -256,8 +264,12 @@ const StoryGallery = ({ stories = [], onSelectStory, onDeleteStory }) => {
         ) : (
           // Stories Grid
           <div className="stories-grid">
-            {/* Sample PDF Card */}
-            {renderPdfCard()}
+            {/* Sample PDF Cards */}
+            {loadingPdfs ? (
+              renderLoadingPdfCards()
+            ) : (
+              samplePdfs.map((pdfInfo, index) => renderPdfCard(pdfInfo, index))
+            )}
             
             {/* Story Cards */}
             {stories.map(renderStoryCard)}
@@ -266,6 +278,7 @@ const StoryGallery = ({ stories = [], onSelectStory, onDeleteStory }) => {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: (samplePdfs.length + stories.length) * 0.1 }}
               className="story-card add-new-card"
               onClick={handleCreateStory}
             >

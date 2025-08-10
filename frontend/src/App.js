@@ -124,10 +124,8 @@ function App() {
             />
             
             {/* PDF Viewer Route */}
-            <Route 
-              path="/pdf-viewer" 
-              element={<PDFGalleryViewer />} 
-            />
+            <Route path="/pdf-viewer" element={<PDFGalleryViewer />} />
+            <Route path="/pdf-viewer/:pdfId" element={<PDFGalleryViewer />} />
 
             {/* Pricing Route */}
             <Route 

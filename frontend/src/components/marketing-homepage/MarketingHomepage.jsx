@@ -261,7 +261,7 @@ const MarketingHomepage = () => {
             {/* Good Example */}
             <div className="comparison-card comparison-good">
               <div className="comparison-header">
-                <h3 className="comparison-title good">StoryBook Creator</h3>
+                <h3 className="comparison-title good">StoryBloom AI</h3>
                 <span className="comparison-badge good">✅ Perfect Consistency</span>
               </div>
               

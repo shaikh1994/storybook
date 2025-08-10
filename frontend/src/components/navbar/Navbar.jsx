@@ -17,7 +17,7 @@ const Navbar = () => {
       <div className="navbar-container">
         <Link to="/" className="navbar-logo">
           <FaBook className="logo-icon" />
-          <span>StoryBook Creator</span>
+          <span>StoryBloom AI</span>
         </Link>
 
         <div className="navbar-links">

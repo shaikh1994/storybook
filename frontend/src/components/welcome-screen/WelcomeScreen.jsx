@@ -85,7 +85,7 @@ const WelcomeScreen = () => {
           transition={{ delay: 0.3, duration: 0.8 }}
           className="welcome-title"
         >
-          StoryBook Creator
+          StoryBloom AI
         </motion.h1>
 
         {/* Subtitle */}
